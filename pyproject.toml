@@ -9,5 +9,6 @@ requires-python = ">=3.11"
 dependencies = []
 [project.scripts]
 supply-flow = "supply_flow.cli:main"
+supply-flow-repo = "supply_flow.repo_cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
