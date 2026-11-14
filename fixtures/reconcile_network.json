@@ -1,0 +1,10 @@
+{
+  "nodes": ["depot", "hub", "port", "yard"],
+  "links": [
+    {"id": "L1", "from": "depot", "to": "hub", "capacity": 100},
+    {"id": "L2", "from": "hub", "to": "port", "capacity": 100},
+    {"id": "L3", "from": "port", "to": "yard", "capacity": 100}
+  ],
+  "supplies": [],
+  "demands": []
+}
