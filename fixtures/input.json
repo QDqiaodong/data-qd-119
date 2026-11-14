@@ -1,0 +1,44 @@
+{
+  "nodes": [
+    "reservoir",
+    "pump",
+    "east",
+    "west"
+  ],
+  "links": [
+    {
+      "id": "L1",
+      "from": "reservoir",
+      "to": "pump",
+      "capacity": 7
+    },
+    {
+      "id": "L2",
+      "from": "pump",
+      "to": "east",
+      "capacity": 4
+    },
+    {
+      "id": "L3",
+      "from": "pump",
+      "to": "west",
+      "capacity": 5
+    }
+  ],
+  "supplies": [
+    {
+      "node": "reservoir",
+      "amount": 10
+    }
+  ],
+  "demands": [
+    {
+      "node": "east",
+      "amount": 4
+    },
+    {
+      "node": "west",
+      "amount": 5
+    }
+  ]
+}
