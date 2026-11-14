@@ -1,0 +1,37 @@
+{
+  "nodes": [
+    "s",
+    "a",
+    "b"
+  ],
+  "links": [
+    {
+      "id": "L1",
+      "from": "s",
+      "to": "a",
+      "capacity": 4
+    },
+    {
+      "id": "L2",
+      "from": "s",
+      "to": "b",
+      "capacity": 4
+    }
+  ],
+  "supplies": [
+    {
+      "node": "s",
+      "amount": 4
+    }
+  ],
+  "demands": [
+    {
+      "node": "a",
+      "amount": 4
+    },
+    {
+      "node": "b",
+      "amount": 4
+    }
+  ]
+}
