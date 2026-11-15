@@ -11,5 +11,6 @@ dependencies = []
 supply-flow = "supply_flow.cli:main"
 supply-flow-repo = "supply_flow.repo_cli:main"
 supply-flow-reconcile = "supply_flow.reconcile_cli:main"
+supply-flow-observe = "supply_flow.observe_cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]

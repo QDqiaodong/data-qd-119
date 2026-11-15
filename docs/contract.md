@@ -51,3 +51,13 @@ CSV 合并为独立 SQLite 对账库。输入时间必须带显式时区并统�
 发运并允许拆分，无处可抵的量记孤儿且不借用未来发运。输出绑定 `revision`、
 `snapshot_id` 与两源文件 SHA256，失败保留旧结果、不写源仓库。
 完整规则与资源边界见 [对账契约](reconciliation.md)。
+
+## 链路观测采集入口
+
+同一版本仓库另提供 `supply-flow-observe` / `supply_flow.observe_cli`，从分页
+HTTP 源把一代 `id,link_id,time,state`（state 仅 up/down）观测事件采进独立
+SQLite 采集库：首页无参数、续页带 `snapshot`/`cursor`、每页 ≤1000 事件、
+`next=null` 结束。逐页一个事务落库（事件、原始页 SHA256、下一游标），断杀
+续采，末页原子发布整代；查询只返回最近完整代及来源绑定，HTTP 410 作废暂存
+代。标识、带时区时间与链路存在性沿用本契约与指定 `revision` 快照。
+完整规则见 [采集契约](observation.md)。

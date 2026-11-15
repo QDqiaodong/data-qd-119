@@ -132,3 +132,32 @@ python3 -c "import sqlite3;print(sqlite3.connect('run/reconcile.db').execute(
 hub→port 的 6。安装后控制台脚本为 `supply-flow-reconcile`；退出码 0 成功、
 2 输入/校验/IO 错误。真实 CLI 测试覆盖跨时区同刻、拆收、早到、重复冲突与
 百万级积压，峰值内存由子进程 `ru_maxrss` 实测，见 tests/test_reconcile.py。
+
+## 链路观测采集
+
+`supply_flow.observe` 把分页 HTTP 观测源的一代链路状态事件采进独立 SQLite
+采集库，完整规则见 [采集契约](docs/observation.md)。要点：
+
+- 首页 `GET <endpoint>` 无参数，续页带 `snapshot`/`cursor`；响应
+  `{snapshot, next, events}`，`next=null` 结束，每页 ≤1000 事件。
+- 事件 `{id, link_id, time, state}`：`state` 仅 `up`/`down`，时间必须带显式
+  时区并统一 UTC，链路须存在于 `--revision` 指定版本；同代 `snapshot` 恒定，
+  事件按规范值去重（冲突拒绝），游标环拒绝。
+- 每页事件、原始页 SHA256 与下一游标在一个事务内落库；断杀重跑从已提交页
+  续采，末页才原子发布整代。查询永远返回最近完整代及来源绑定；失败保留旧代
+  与检查点，HTTP 410 作废暂存代（退出码 4）后下次重采。暂存代绑定端点、
+  revision 与仓库快照 ID，参数变更拒绝续采（`--restart` 显式丢弃）。
+- 仅标准库；100 万事件实测新增峰值内存约 31 MiB（上限 64 MiB）。
+
+```sh
+python3 fixtures/observe_server.py 8765 &   # 演示源：3 页、6 事件（1 条重复）
+PYTHONPATH=src python3 -m supply_flow.observe_cli collect \
+  --db run/net.db --revision 0 \
+  --endpoint http://127.0.0.1:8765/feed --collect run/obs.db
+PYTHONPATH=src python3 -m supply_flow.observe_cli latest --collect run/obs.db
+PYTHONPATH=src python3 -m supply_flow.observe_cli events --collect run/obs.db
+```
+
+安装后控制台脚本为 `supply-flow-observe`；退出码 0 成功、2 输入/校验/IO
+错误、4 HTTP 410 作废。真实进程测试（提交前后断杀、游标环、代号变化、410、
+冲突、采集中读取、百万事件内存）见 tests/test_observe.py。

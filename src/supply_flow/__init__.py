@@ -1,5 +1,12 @@
 """Integer maximum-flow allocation with verifiable minimum cut."""
 from .model import analyze, ALLOCATION_MODES
+from .observe import (
+    InvalidatedError,
+    ObserveError,
+    iter_events,
+    latest_generation,
+    observe,
+)
 from .repo import (
     ConflictError,
     RepoError,
@@ -16,6 +23,11 @@ from .repo import (
 __all__ = [
     "analyze",
     "ALLOCATION_MODES",
+    "observe",
+    "latest_generation",
+    "iter_events",
+    "ObserveError",
+    "InvalidatedError",
     "Repository",
     "RepoError",
     "ConflictError",
